@@ -8,6 +8,11 @@ venv-init:
 	python3 setup.py develop
 
 
+pip-compile:
+	venv/bin/pip install -U pip-tools
+	venv/bin/pip-compile --allow-unsafe --generate-hashes
+
+
 run-service:
 	FLASK_APP=$(FLASK_APP) DASHDOTDB_DATABASE_URL=$(DATABASE_URL) flask run --debugger --port 8080
 
