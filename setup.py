@@ -3,7 +3,6 @@ from setuptools import setup
 
 setup(name='dashdotdb',
       packages=['dashdotdb'],
-      version=open('VERSION').read().strip(),
       author='Red Hat Application SRE Team',
       author_email="sd-app-sre@redhat.com",
       description='',
