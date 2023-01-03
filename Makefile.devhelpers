@@ -13,6 +13,21 @@ pip-compile:
 	venv/bin/pip-compile --allow-unsafe --generate-hashes
 
 
+find-builddeps:
+	$(eval psycopg2 := $(shell grep '^psycopg2-binary==[^ ]*' requirements.txt --only-matching))
+	if ! pip download --no-binary :all: '$(psycopg2)' -d /tmp; then \
+		echo "pip has failed to download $(psycopg2), the find_builddeps script will fail"; \
+		echo "installing these may help: gcc, pg_config (from libpq-devel?), python headers (from python-devel?)"; \
+		exit 1; \
+	fi
+	curl https://raw.githubusercontent.com/containerbuildsystem/cachito/master/bin/pip_find_builddeps.py -O && \
+	trap 'rm ./pip_find_builddeps.py' EXIT && \
+	chmod +x ./pip_find_builddeps.py && \
+	./pip_find_builddeps.py requirements.txt -o requirements-build.in --only-write-on-update && \
+	venv/bin/pip install -U pip-tools && \
+	venv/bin/pip-compile --allow-unsafe --generate-hashes requirements-build.in
+
+
 run-service:
 	FLASK_APP=$(FLASK_APP) DASHDOTDB_DATABASE_URL=$(DATABASE_URL) flask run --debugger --port 8080
 
