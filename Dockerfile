@@ -4,7 +4,7 @@ WORKDIR     /dashdotdb
 
 COPY        . ./
 
-RUN         pip3 install --no-cache-dir . && \
+RUN         pip3 install --no-cache-dir --use-pep517 . && \
             pip3 install --no-cache-dir gunicorn
 
 ENTRYPOINT  ["./entrypoint.sh"]
